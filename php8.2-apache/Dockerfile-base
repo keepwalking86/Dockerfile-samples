@@ -1,0 +1,33 @@
+# Using image base php:8.2-apache
+FROM php:8.2-apache
+
+# Timezone
+ENV TZ='Asia/Ho_Chi_Minh'
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Install requirement packages
+RUN apt-get update && \
+    apt-get install -y \
+        libzip-dev \
+        libpng-dev \
+        libjpeg-dev \
+        libfreetype6-dev \
+        unzip \
+        libpq-dev \
+        libonig-dev \
+        libcurl4-openssl-dev
+
+# Install PHP extension
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install -j$(nproc) gd pdo_mysql zip mbstring exif pcntl curl
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install MongoDB extension
+RUN pecl install mongodb && \
+    docker-php-ext-enable mongodb
+
+# Install Redis extension
+RUN pecl install redis && \
+    docker-php-ext-enable redis
