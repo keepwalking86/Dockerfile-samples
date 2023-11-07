@@ -1,4 +1,4 @@
-FROM hub.example.com/example/php8.2-apache-base:latest
+FROM keepwalking/php8.2-apache-base:latest
 
 WORKDIR /var/www/html
 

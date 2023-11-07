@@ -4,6 +4,8 @@ FROM php:8.2-apache
 # Timezone
 ENV TZ='Asia/Ho_Chi_Minh'
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# Change php configuration file
+COPY php.ini /usr/local/etc/php/conf.d/
 
 # Install requirement packages
 RUN apt-get update && \
@@ -19,7 +21,7 @@ RUN apt-get update && \
 
 # Install PHP extension
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install -j$(nproc) gd pdo_mysql zip mbstring exif pcntl curl
+    docker-php-ext-install -j$(nproc) gd pdo_mysql zip mbstring exif pcntl curl bcmath opcache
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
